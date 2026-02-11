@@ -1,5 +1,6 @@
 package graphic;
 
+import enums.ProgramState;
 import simulation.Clock;
 
 import static com.raylib.Raylib.*;

@@ -18,47 +18,8 @@ public class Simulatore {
     private GraphicSimulation simulatoreGrafico;
     private Float dayDuration = 0f;
 
-    public Simulatore() {
+    public Simulatore(Casa casa, String fileJson) {
         this.simulatoreGrafico = new GraphicSimulation();
-    }
-
-    private void parseAppliance(JSONObject appliance, Casa casa) {
-        String type = appliance.getString("tipo");
-        switch (type.toLowerCase()) {
-            case "lavatrice":
-                Lavatrice washingMachine = new Lavatrice(appliance,"velocita_centrifuga");
-                casa.addAppliance(washingMachine);
-                break;
-            case "lavastoviglie":
-                Lavastoviglie dishwasher = new Lavastoviglie(appliance,"programma");
-                casa.addAppliance(dishwasher);
-                break;
-            case "asciugatrice":
-                Asciugatrice dryer = new Asciugatrice(appliance,"temperatura_asciugatura");
-                casa.addAppliance(dryer);
-                break;
-            case "frigorifero":
-                Frigo refrigerator = new Frigo(appliance,"temperatura");
-                casa.addAppliance(refrigerator);
-                break;
-            case "pannellifotovoltaici":
-                PannelliFotovoltaici pannelli = new PannelliFotovoltaici(appliance);
-                casa.addAppliance(pannelli);
-                break;
-            default:
-                throw new ApplianceDoesntExistException("L'elettrodomestico non esiste");
-        }
-    }
-
-    private void parseRiscaldamento(JSONObject riscaldamento, Casa casa) {
-        String tipo = riscaldamento.getString("tipo");
-        double consumo = riscaldamento.getDouble("consumo_orario");
-        float temperaturaDesiderata = (float) riscaldamento.getDouble("temperatura_desiderata");
-
-        casa.aggiungiImpiantoRiscaldamento(new Riscaldamento(tipo, consumo, temperaturaDesiderata) {});
-    }
-
-    public void setup(Casa casa,String fileJson) {
         var path = Paths.get(fileJson);
         byte[] configList;
 
@@ -97,6 +58,42 @@ public class Simulatore {
             System.out.println("Stagione: " + simulation.getString("stagione"));
         }
         System.out.println("\nINIZIO SIMULAZIONE");
+    }
+
+    private void parseAppliance(JSONObject appliance, Casa casa) {
+        String type = appliance.getString("tipo");
+        switch (type.toLowerCase()) {
+            case "lavatrice":
+                Lavatrice washingMachine = new Lavatrice(appliance,"velocita_centrifuga");
+                casa.addAppliance(washingMachine);
+                break;
+            case "lavastoviglie":
+                Lavastoviglie dishwasher = new Lavastoviglie(appliance,"programma");
+                casa.addAppliance(dishwasher);
+                break;
+            case "asciugatrice":
+                Asciugatrice dryer = new Asciugatrice(appliance,"temperatura_asciugatura");
+                casa.addAppliance(dryer);
+                break;
+            case "frigorifero":
+                Frigo refrigerator = new Frigo(appliance,"temperatura");
+                casa.addAppliance(refrigerator);
+                break;
+            case "pannellifotovoltaici":
+                PannelliFotovoltaici pannelli = new PannelliFotovoltaici(appliance);
+                casa.addAppliance(pannelli);
+                break;
+            default:
+                throw new ApplianceDoesntExistException("L'elettrodomestico non esiste");
+        }
+    }
+
+    private void parseRiscaldamento(JSONObject riscaldamento, Casa casa) {
+        String tipo = riscaldamento.getString("tipo");
+        double consumo = riscaldamento.getDouble("consumo_orario");
+        float temperaturaDesiderata = (float) riscaldamento.getDouble("temperatura_desiderata");
+
+        casa.aggiungiImpiantoRiscaldamento(new Riscaldamento(tipo, consumo, temperaturaDesiderata) {});
     }
 
     public boolean esegui(Casa casa,String fileJson) {

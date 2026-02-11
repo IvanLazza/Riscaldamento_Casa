@@ -8,10 +8,11 @@ void main() {
 
         Casa casa1 = new Casa("cicciogamer89");
         String fileJson = "config.json";
-        Simulatore simulatore = new Simulatore();
+        Simulatore simulatore = new Simulatore(casa1,  fileJson);
         boolean isProgrammRunning;
 
     do {
+
         isProgrammRunning = simulatore.esegui(casa1, fileJson);
 
     } while (isProgrammRunning);

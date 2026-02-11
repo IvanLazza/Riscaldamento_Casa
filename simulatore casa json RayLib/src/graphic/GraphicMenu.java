@@ -1,11 +1,14 @@
 package graphic;
 
+import enums.ProgramState;
 import simulation.Clock;
 
 import static com.raylib.Raylib.*;
 import static com.raylib.Colors.*;
 
 public class GraphicMenu {
+
+    private ProgramState programState;
 
     private Rectangle bottoneAvvio;
     private Rectangle bottoneAggiungi;
@@ -25,6 +28,7 @@ public class GraphicMenu {
         bottoneVisualizza.x(810); bottoneVisualizza.y(370); bottoneVisualizza.width(260); bottoneVisualizza.height(60);
 
         mousePosition = new Vector2();
+        programState = ProgramState.RUNNING;
     }
 
     public void drawStats(Clock clock) {
@@ -44,12 +48,12 @@ public class GraphicMenu {
 
 
          if (CheckCollisionPointRec(mousePosition, bottoneAvvio)) {
-            DrawRectangleRec(bottoneAvvio, WHITE);
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                bottoneAvvio();
-            }
+             DrawRectangleRec(bottoneAvvio, WHITE);
+             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                 bottoneAvvio();
+             }
         } else {
-            DrawRectangleRec(bottoneAvvio, LIGHTGRAY);
+             DrawRectangleRec(bottoneAvvio, LIGHTGRAY);
         }
         DrawText("AVVIO SIMULAZIONE", (int)bottoneAvvio.x()+20, (int)bottoneAvvio.y()+25, 20, BLACK);
 
@@ -84,14 +88,32 @@ public class GraphicMenu {
             DrawRectangleRec(bottoneVisualizza, LIGHTGRAY);
         }
         DrawText("VISUALIZZA IMPIANTI", (int)bottoneVisualizza.x()+20, (int)bottoneVisualizza.y()+25, 20, BLACK);
+
+        if (CheckCollisionPointRec(mousePosition, bottoneVisualizza) || CheckCollisionPointRec(mousePosition, bottoneAggiungi) || CheckCollisionPointRec(mousePosition, bottoneElimina) || CheckCollisionPointRec(mousePosition, bottoneAvvio)) {
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        } else {
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        }
+
+
+        switch (programState) {
+            case RUNNING: break;
+            case START: bottoneAvvio(); break;
+            case ADD: bottoneAggiungi(); break;
+            case REMOVE: bottoneElimina(); break;
+            case VISUALIZE: bottoneVisualizza(); break;
+        }
     }
 
-    private void bottoneAvvio() {}
+    private void bottoneAvvio() {
+        programState = ProgramState.START;
+        DrawRectangle(100, 200, 600, 500, DARKGRAY);
+    }
 
-    private void bottoneAggiungi(){}
+    private void bottoneAggiungi() {}
 
-    private void bottoneElimina(){}
+    private void bottoneElimina() {}
 
-    private void bottoneVisualizza(){}
+    private void bottoneVisualizza() {}
 }
 
