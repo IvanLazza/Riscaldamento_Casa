@@ -12,9 +12,7 @@ void main() {
         boolean isProgrammRunning;
 
     do {
-
         isProgrammRunning = simulatore.esegui(casa1, fileJson);
-
     } while (isProgrammRunning);
 
     simulatore.endSimulation(casa1);

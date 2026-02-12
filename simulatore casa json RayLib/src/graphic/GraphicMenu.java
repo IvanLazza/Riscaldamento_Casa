@@ -3,6 +3,9 @@ package graphic;
 import enums.ProgramState;
 import simulation.Clock;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 import static com.raylib.Raylib.*;
 import static com.raylib.Colors.*;
 
@@ -10,25 +13,22 @@ public class GraphicMenu {
 
     private ProgramState programState;
 
-    private Rectangle bottoneAvvio;
-    private Rectangle bottoneAggiungi;
-    private Rectangle bottoneElimina;
-    private Rectangle bottoneVisualizza;
+    private boolean isHovering;
+    private ButtonArrayList bottoniMenu;
 
-    private Vector2 mousePosition;
+    private Texture sidebar;
+    private PannelloStart startPanel;
 
     public GraphicMenu() {
-        bottoneAvvio = new Rectangle();
-        bottoneAvvio.x(810); bottoneAvvio.y(100); bottoneAvvio.width(260); bottoneAvvio.height(60);
-        bottoneAggiungi = new Rectangle();
-        bottoneAggiungi.x(810); bottoneAggiungi.y(190); bottoneAggiungi.width(260); bottoneAggiungi.height(60);
-        bottoneElimina = new Rectangle();
-        bottoneElimina.x(810); bottoneElimina.y(280); bottoneElimina.width(260); bottoneElimina.height(60);
-        bottoneVisualizza = new Rectangle();
-        bottoneVisualizza.x(810); bottoneVisualizza.y(370); bottoneVisualizza.width(260); bottoneVisualizza.height(60);
+        bottoniMenu = new ButtonArrayList();
+        bottoniMenu.add(new MenuButton("bottoneAvvio", 810f, 200f, 260f, 60f, "AVVIO SIMULAZIONE", LIGHTGRAY));
+        bottoniMenu.add(new MenuButton("bottoneAggiungi", 810f, 290f, 260f, 60f, "AGGIUNGI IMPIANTO", LIGHTGRAY));
+        bottoniMenu.add(new MenuButton("bottoneElimina", 810f, 380f, 260f, 60f, "RIMUOVI IMPIANTO", LIGHTGRAY));
+        bottoniMenu.add(new MenuButton("bottoneVisualizza", 810f, 470f, 260f, 60f, "VISUALIZZA IMPIANTI", LIGHTGRAY));
 
-        mousePosition = new Vector2();
         programState = ProgramState.RUNNING;
+        startPanel = new PannelloStart("AVVIO SIMULAZIONE");
+        sidebar = LoadTexture("sprites/menu/Sidebar.png");
     }
 
     public void drawStats(Clock clock) {
@@ -37,64 +37,43 @@ public class GraphicMenu {
         } else {
             DrawText("Giorno: " + clock.getDay() + " [" + clock.getHour() + ":00]", 20, 20, 20, WHITE);
         }
-        DrawText("SIMULAZIONE CASA", 820, 20, 25, WHITE);
+        DrawText("SIMULAZIONE CASA", 820, 45, 25, WHITE);
     }
 
     public void drawMenu(Clock clock) {
 
-        mousePosition = GetMousePosition();
-        DrawRectangle(800, 0, 1080, 920, DARKGRAY);
+        DrawTexture(sidebar, 800, 0, WHITE);
         drawStats(clock);
 
+        bottoniMenu.get("bottoneAvvio").draw(programState);
+        if (bottoniMenu.get("bottoneAvvio").isHovering(programState)) {
+            bottoniMenu.get("bottoneAvvio").setColor(WHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) bottoneAvvio();
+        } else bottoniMenu.get("bottoneAvvio").setColor(LIGHTGRAY);
 
-         if (CheckCollisionPointRec(mousePosition, bottoneAvvio)) {
-             DrawRectangleRec(bottoneAvvio, WHITE);
-             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                 bottoneAvvio();
-             }
-        } else {
-             DrawRectangleRec(bottoneAvvio, LIGHTGRAY);
-        }
-        DrawText("AVVIO SIMULAZIONE", (int)bottoneAvvio.x()+20, (int)bottoneAvvio.y()+25, 20, BLACK);
+        bottoniMenu.get("bottoneAggiungi").draw(programState);
+        if (bottoniMenu.get("bottoneAggiungi").isHovering(programState)) {
+            bottoniMenu.get("bottoneAggiungi").setColor(WHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) bottoneAvvio();
+        } else bottoniMenu.get("bottoneAggiungi").setColor(LIGHTGRAY);
+
+        bottoniMenu.get("bottoneElimina").draw(programState);
+        if (bottoniMenu.get("bottoneElimina").isHovering(programState)) {
+            bottoniMenu.get("bottoneElimina").setColor(WHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) bottoneAvvio();
+        } else bottoniMenu.get("bottoneElimina").setColor(LIGHTGRAY);
+
+        bottoniMenu.get("bottoneVisualizza").draw(programState);
+        if (bottoniMenu.get("bottoneVisualizza").isHovering(programState)) {
+            bottoniMenu.get("bottoneVisualizza").setColor(WHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) bottoneAvvio();
+        } else bottoniMenu.get("bottoneVisualizza").setColor(LIGHTGRAY);
 
 
-        if (CheckCollisionPointRec(mousePosition, bottoneAggiungi)) {
-            DrawRectangleRec(bottoneAggiungi, WHITE);
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                bottoneAggiungi();
-            }
-        } else {
-            DrawRectangleRec(bottoneAggiungi, LIGHTGRAY);
-        }
-        DrawText("AGGIUNGI IMPIANTO", (int)bottoneAggiungi.x()+20, (int)bottoneAggiungi.y()+25, 20, BLACK);
+        isHovering = bottoniMenu.hasHovered(programState);
 
-
-        if (CheckCollisionPointRec(mousePosition, bottoneElimina)) {
-            DrawRectangleRec(bottoneElimina, WHITE);
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                bottoneElimina();
-            }
-        } else {
-            DrawRectangleRec(bottoneElimina, LIGHTGRAY);
-        }
-        DrawText("RIMUOVI IMPIANTO", (int)bottoneElimina.x()+20, (int)bottoneElimina.y()+25, 20, BLACK);
-
-        if (CheckCollisionPointRec(mousePosition, bottoneVisualizza)) {
-            DrawRectangleRec(bottoneVisualizza, WHITE);
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                bottoneVisualizza();
-            }
-        } else {
-            DrawRectangleRec(bottoneVisualizza, LIGHTGRAY);
-        }
-        DrawText("VISUALIZZA IMPIANTI", (int)bottoneVisualizza.x()+20, (int)bottoneVisualizza.y()+25, 20, BLACK);
-
-        if (CheckCollisionPointRec(mousePosition, bottoneVisualizza) || CheckCollisionPointRec(mousePosition, bottoneAggiungi) || CheckCollisionPointRec(mousePosition, bottoneElimina) || CheckCollisionPointRec(mousePosition, bottoneAvvio)) {
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        } else {
-            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-        }
-
+        if (isHovering) SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
         switch (programState) {
             case RUNNING: break;
@@ -107,7 +86,7 @@ public class GraphicMenu {
 
     private void bottoneAvvio() {
         programState = ProgramState.START;
-        DrawRectangle(100, 200, 600, 500, DARKGRAY);
+        startPanel.draw(programState);
     }
 
     private void bottoneAggiungi() {}
